@@ -29,7 +29,24 @@ function! CreateHabitTrackerForm()
 
 	endfor
 
-	echo datehabits
+	let otpt = ""	
+	let headers = "| Dates | "
+	let c = 0
+	while c < len(habits) - 1
+		let headers = headers . habits[c] . " | "
+		let c += 1
+	endwhile
+
+	let otpt = otpt . headers . "\n"
+	for date in datehabits
+		let line = "| " . date . " |"
+		for habit in date
+			
+		endfor
+		let otpt = otpt . line . "\n"	
+	endfor
+
+	echo otpt 
 		
 endfunction
 
