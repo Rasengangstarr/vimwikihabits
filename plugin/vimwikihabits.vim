@@ -9,9 +9,30 @@ function! AddHabitsToDiary()
 endfunction
 
 function! CreateHabitTrackerForm()
-	" Get all files with dates as filenames
-	
+	let dates = split(system('ls -l | grep -o "[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}"'), "\n")
+	let habits = split(system('cat habits.wiki'), "\n")
+	let datehabits = []
+	for date in dates
+		let habitsForDay = system("cat " . date . ".wiki | sed -n '/^==Habits==/,/^==\\/Habits==/{p;/^==\\/Habits==/q}' | grep '-'")
+		let datehabits = datehabits + [map(range(len(habits)), 0)]
+		for habit in split(habitsForDay, "\n")
+			let indx = 0
+			for h2 in habits
+				if habit[6:] == h2
+					if habit[3] == 'X'
+						let datehabits[-1][indx] = 'X'
+					endif
+				endif
+				let indx += 1
+			endfor
+		endfor
+
+	endfor
+
+	echo datehabits
 		
 endfunction
 
 command! VimWikiHabitsInsert : call AddHabitsToDiary()
+command! VimWikiHabitsGenerate : call CreateHabitTrackerForm()
+
