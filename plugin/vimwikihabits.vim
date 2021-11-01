@@ -1,3 +1,7 @@
+function! Pad(s,amt)
+	    return a:s . repeat(' ',a:amt - len(a:s))
+endfunction
+
 function! AddHabitsToDiary()
 	let habits = system('cat habits.wiki')
 	let habitsAsTodos = []
@@ -20,7 +24,7 @@ function! CreateHabitTrackerForm()
 			for h2 in habits
 				if habit[6:] == h2
 					if habit[3] == 'X'
-						let datehabits[-1][indx] = 'X'
+						let datehabits[-1][indx] = 1 
 					endif
 				endif
 				let indx += 1
@@ -30,20 +34,27 @@ function! CreateHabitTrackerForm()
 	endfor
 
 	let otpt = ""	
-	let headers = "| Dates | "
+	let headers = "| Date       | "
 	let c = 0
-	while c < len(habits) - 1
+	while c < len(habits)
 		let headers = headers . habits[c] . " | "
 		let c += 1
 	endwhile
-
+	let datec = 0
 	let otpt = otpt . headers . "\n"
 	for date in datehabits
-		let line = "| " . date . " |"
+		let line = "| " . dates[datec] . " |"
+		let habitc = 0
 		for habit in date
-			
+			if habit == 1 
+				let line = line . ' ' . 'X' . Pad('', len(habits[habitc])) . '|' 				
+			else
+				let line = line . ' ' . ' ' . Pad('', len(habits[habitc])) . '|' 				
+			endif	
+			let habitc += 1
 		endfor
-		let otpt = otpt . line . "\n"	
+		let otpt = otpt . line . "\n"
+		let datec += 1
 	endfor
 
 	echo otpt 
@@ -52,4 +63,3 @@ endfunction
 
 command! VimWikiHabitsInsert : call AddHabitsToDiary()
 command! VimWikiHabitsGenerate : call CreateHabitTrackerForm()
-
